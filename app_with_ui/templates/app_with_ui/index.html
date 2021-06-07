@@ -1,0 +1,45 @@
+{% extends 'app_with_ui/base.html' %}
+
+{% block content %}
+
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                <a href="{% url 'all_images' %}" class="btn btn-primary btn-lg">Show list of uploaded images</a>
+            </div>
+        </div>
+        {% if user.account_tier.has_ability_create_expiry_link %}
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                <a href="{% url 'all_expired_links' %}" class="btn btn-primary btn-lg">Show list of expiry links</a>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                <a href="{% url 'upload_image' %}" class="btn btn-primary btn-lg">Upload new image</a>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                {% if images_count %}
+                <p>You have {{ images_count }} loaded images</p>
+                {% else %}
+                <p>You did not load any images yet</p>
+                {% endif %}
+                {% if user.account_tier.has_ability_create_expiry_link %}
+                {% if expiry_links_count %}
+                <p>You have {{ expiry_links_count }} active expiry links</p>
+                {% else %}
+                <p>You did not create any expiry links yet</p>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock content %}

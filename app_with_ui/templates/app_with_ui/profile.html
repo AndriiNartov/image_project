@@ -1,0 +1,41 @@
+{% extends 'app_with_ui/base.html' %}
+
+{% block content %}
+
+
+
+  <main class="container">
+    <div class="row text-center">
+      <div class="col-8 col-lg-4 offset-2 offset-lg-4">
+        <form method="post" class="form-signin pt-5" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="text-center mt-5 b-1">
+            <h1 class="h3 mb-3 font-weight-normal">Images</h1>
+            <p class="h5 font-weight-light">Here you can change your name, surname and account tier</p>
+          </div>
+          <div class="mt-5 form-label-group">
+            <p class="text-muted">First name</p>
+            {{ form.first_name }}
+            <label for="inputLogin">{{ form.errors.username}}</label>
+          </div>
+          <div class="form-label-group">
+            <p class="text-muted">Last name</p>
+            {{ form.last_name }}
+            <label for="inputLogin">{{ form.errors.username}}</label>
+          </div>
+          <div class="form-label-group">
+            <p class="text-muted">Account tier</p>
+            {{ form.account_tier}}
+            <label for="inputLogin">{{ form.errors.username}}</label>
+          </div>
+            <br><br>
+            <input type="submit" value="Save" class="btn btn-primary">
+        </form>
+      </div>
+    </div>
+  </main>
+
+
+
+
+{% endblock content %}

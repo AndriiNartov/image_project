@@ -1,0 +1,50 @@
+{% extends 'app_with_ui/base.html' %}
+
+{% block content %}
+
+
+  <main class="container mt-3 pb-5">
+    <div class="row mt-5">
+      <div class="col-12 col-lg-8 row-align-items-center">
+        <div class="card">
+          <div class="card-body px-6 pb-4">
+            <!-- Tab -->
+
+              <form method="post" enctype="multipart/form-data" class="post-form" action="">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-12 col-md-6">
+                    <div class="form-group pb-2">
+                      <label class="mb-2 text-dark" for="companyName">Title</label>
+                        {{ form.title }}
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <div class="form-group">
+                      <label class="mb-2 text-dark" for="companyLogo">Image</label>
+                      <div class="row align-items-center">
+                        <div class="col-6" style="position: relative;">
+                          <div class="input-group-prepend" style="position: absolute; top: 0;right: 15px;">
+                            <span class="btn btn-primary px-4">Upload image</span>
+                          </div>
+                          <div class="custom-file" style="">
+                              {{ form.image }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <input type="submit" class="btn btn-primary" value="Save">
+                </div>
+              </form>
+            </section>
+            <!-- END Tab -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+{% endblock %}

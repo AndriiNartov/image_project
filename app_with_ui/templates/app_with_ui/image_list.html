@@ -1,0 +1,49 @@
+{% extends 'app_with_ui/base.html' %}
+
+{% block content %}
+
+
+    <div class="container">
+        {% if images  %}
+        <table class="table">
+            <thead  class="text-center">
+                <th>Title</th>
+                <th>Size</th>
+                <th>Uploading date</th>
+                <th>Download image</th>
+                <th>Show image</th>
+                {% if user.account_tier.has_ability_create_expiry_link %}
+                <th>Create expiry link</th>
+                {% endif %}
+            </thead>
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                    <tbody>
+                    {% for image in images %}
+                        <tr  class="text-center">
+                            <td>{{ image.title }}</td>
+                            <td>{{ image.width }}x{{ image.height }}</td>
+                            <td>{{ image.upload_date|date:'d.m.Y, H:i' }}</td>
+                            <td><a href="{{ image.image.url }}" class="btn btn-primary" download type="image/jpeg">Download</a></td>
+                            <td><a href="{{ image.image.url }}" class="btn btn-primary" type="image/webp">Show</a></td>
+                            {% if user.account_tier.has_ability_create_expiry_link %}
+                            <td><a href="{% url 'create_expiry_link' image.id %}" class="btn btn-primary">Create expiry link</a></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="row mt-5">
+          <div class="col-md-12 text-center">
+            <h3>You did not upload any images yet.</h3>
+            <h3><a href="{% url 'upload_image' %}">Go here</a> to upload your first image!</h3>
+          </div>
+        </div>
+        {% endif %}
+    </div>
+
+
+{% endblock content %}

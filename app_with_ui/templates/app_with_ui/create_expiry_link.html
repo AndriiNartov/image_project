@@ -1,0 +1,30 @@
+{% extends 'app_with_ui/base.html' %}
+
+{% block content %}
+
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                {% if not expiring_link_obj %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <br><br>
+                    <input type="submit" value="Create" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                <p>Your link: </p><a href="{% url 'show_image_by_exp_link' expiring_link_obj.uuid_link %}">{{ expiring_link_obj.expiry_link }}</a>
+                <br><br>
+                <p>All your expiry links, which are did not expire yet you can find <a href="{% url 'all_expired_links' %}">here</a></p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+{% endblock content %}
