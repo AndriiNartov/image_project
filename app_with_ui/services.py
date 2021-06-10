@@ -1,3 +1,6 @@
+import os.path
+import shutil
+
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse
@@ -73,6 +76,37 @@ def is_link_expired(link_expiring_date_time):
     return now > link_expiring_date_time
 
 
+def open_image_by_exp_link(expiring_link_obj):
+    if not os.path.isdir(f'media/temp'):
+        os.mkdir('media/temp')
+    if not os.path.isdir(f'media/temp/{expiring_link_obj.user.username}'):
+        os.mkdir(f'media/temp/{expiring_link_obj.user.username}')
+    if not os.path.isdir(f'media/temp/{expiring_link_obj.user.username}/{expiring_link_obj.uuid_link}'):
+        os.mkdir(f'media/temp/{expiring_link_obj.user.username}/{expiring_link_obj.uuid_link}')
+        img_base_64 = expiring_link_obj.image_base_64
+        image_64_decode = base64.b64decode(img_base_64)
+        img_file = BytesIO(image_64_decode)
+        decoded_image = img.open(img_file)
+        format = decoded_image.format.lower()
+        filename = f'file.{format}'
+        path = f'media/temp/{expiring_link_obj.user.username}/{expiring_link_obj.uuid_link}'
+        decoded_image.save(f'{path}/{filename}', format=format)
+        return HttpResponse(f'<img src="../../{path}/{filename}" width="50%">')
+    path = f'media/temp/{expiring_link_obj.user.username}/{expiring_link_obj.uuid_link}'
+    filename = os.listdir(path)[0]
+    return HttpResponse(f'<img src="../../{path}/{filename}" width="50%">')
+
+
+def delete_expired_link_image(link, username):
+    """Deleting image from server if link is expired """
+
+    path = f'media/temp/{username}/{link}'
+    try:
+        shutil.rmtree(path, ignore_errors=True)
+    except:
+        return HttpResponse('Ooooops, it seems something went wrong :-{')
+
+
 def show_image_by_exp_link(link):
     """
     This function was created to make sure that expiry link works and
@@ -83,18 +117,13 @@ def show_image_by_exp_link(link):
     try:
         if ExpiredLink.objects.filter(uuid_link=link).exists():
             expiring_link_obj = ExpiredLink.objects.filter(uuid_link=link).first()
+            username = expiring_link_obj.user.username
             if is_link_expired(expiring_link_obj.expiry_date_time):
+                delete_expired_link_image(link, username)
                 expiring_link_obj.delete()
                 return HttpResponse('Your link is expired :(')
             else:
-                img_base_64 = expiring_link_obj.image_base_64
-                image_64_decode = base64.b64decode(img_base_64)
-                img_file = BytesIO(image_64_decode)
-                decoded_image = img.open(img_file)
-                decoded_image.show()
-                return HttpResponse('Image by your link was opened in separate window!')
-        return HttpResponse('Your link is expired :(')
-    except ExpiredLink.DoesNotExist:
+                return open_image_by_exp_link(expiring_link_obj)
         return HttpResponse('Your link is expired :(')
     except ValidationError:
         return HttpResponse('Your link is incorrect :(')

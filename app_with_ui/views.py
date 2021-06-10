@@ -178,15 +178,6 @@ class ShowImageByExpiryLink(View):
         return show_image_by_exp_link(self.kwargs['link'])
 
 
-class CopyExpiryLink(ListView):
-
-    def get(self, request, *args, **kwargs):
-        print(self.kwargs)
-        data = self.kwargs['link']
-        clipboard.copy(f'http://127.0.0.1:8000/temp/{data}/')
-        return redirect('all_expired_links')
-
-
 class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = 'app_with_ui/registration.html'
